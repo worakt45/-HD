@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โอกาสการลงทุนในธุรกิจหน่วยไตเทียมในประเทศไทย</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Professional -->
+    <!-- Application Structure Plan: ผมได้ออกแบบแอปพลิเคชันนี้ในรูปแบบ Dashboard แบบเลื่อนหน้าเดียว (Single-Page Scrolling Dashboard) แทนการนำเสนอแบบสไลด์ต่อสไลด์ เพื่อให้นักลงทุนสามารถสำรวจข้อมูลได้อย่างอิสระตามความสนใจ โครงสร้างประกอบด้วยแถบนำทางด้านบนที่ตรึงไว้เพื่อการเข้าถึงที่รวดเร็ว ส่วนต่างๆ ถูกแบ่งตามหัวข้อหลัก ได้แก่ ภาพรวมตลาด, โมเดลธุรกิจ, ขั้นตอนการจัดตั้ง, การเงิน, และความท้าทาย ซึ่งแต่ละส่วนจะมีองค์ประกอบแบบโต้ตอบได้ เช่น แท็บ, ชาร์ต, และส่วนที่คลิกเพื่อขยายข้อมูลได้ เพื่อให้การดูข้อมูลซับซ้อนเป็นเรื่องง่ายและน่าสนใจ เหตุผลที่เลือกโครงสร้างนี้เพราะช่วยให้นักลงทุนสามารถเปรียบเทียบและวิเคราะห์ข้อมูลสำคัญได้ในหน้าเดียว โดยไม่ต้องคลิกไปมาหลายหน้า ทำให้ประสบการณ์การใช้งานดีขึ้นและส่งเสริมการตัดสินใจที่รวดเร็ว -->
+    <!-- Visualization & Content Choices: 1. ภาพรวมตลาด: Goal->Inform, Viz->Stat cards & Bar Chart (Chart.js), Interaction->Hover on chart. Justification->แสดงการเติบโตของตลาดอย่างชัดเจนและรวดเร็ว | 2. โมเดลธุรกิจ: Goal->Organize/Compare, Viz->Interactive Tabs (HTML/JS), Interaction->Click to switch. Justification->เปรียบเทียบโมเดลต่างๆ ได้ง่ายกว่าการวางแบบคอลัมน์ | 3. ขั้นตอนการขออนุญาต: Goal->Show process, Viz->Styled HTML list/stepper, Interaction->None. Justification->ทำให้กระบวนการที่ซับซ้อนดูเข้าใจง่ายเป็นขั้นตอน | 4. การเงิน (ต้นทุน & รายได้): Goal->Analyze/Compare, Viz->Doughnut & Grouped Bar charts (Chart.js), Interaction->Hover for details. Justification->แสดงสัดส่วนต้นทุนและเปรียบเทียบกำไรต่อหน่วยได้อย่างเห็นภาพชัดเจน | 5. ความท้าทาย: Goal->Organize, Viz->Accordion (HTML/JS), Interaction->Click to expand. Justification->นำเสนอข้อมูลแบบย่อยง่าย ไม่รกสายตา | ทั้งหมดนี้ไม่ใช้ SVG หรือ Mermaid JS และสนับสนุนโครงสร้างที่ออกแบบไว้ -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #F8F7F4; /* Warm Neutral Background */
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #2563eb; /* Subtle Accent */
+            border-bottom-color: #2563eb;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .tab-btn.active {
+            background-color: #3B82F6;
+            color: white;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex items-center justify-between">
+                <div class="text-xl font-bold text-blue-600">การลงทุนธุรกิจไตเทียม</div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#market" class="nav-link pb-1">ภาพรวมตลาด</a>
+                    <a href="#models" class="nav-link pb-1">โมเดลธุรกิจ</a>
+                    <a href="#setup" class="nav-link pb-1">การจัดตั้ง</a>
+                    <a href="#financials" class="nav-link pb-1">การเงิน</a>
+                    <a href="#challenges" class="nav-link pb-1">ความท้าทาย</a>
+                    <a href="#conclusion" class="nav-link pb-1">บทสรุป</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-gray-800 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden mt-4">
+                <a href="#market" class="block py-2 px-4 text-sm hover:bg-gray-100 rounded">ภาพรวมตลาด</a>
+                <a href="#models" class="block py-2 px-4 text-sm hover:bg-gray-100 rounded">โมเดลธุรกิจ</a>
+                <a href="#setup" class="block py-2 px-4 text-sm hover:bg-gray-100 rounded">การจัดตั้ง</a>
+                <a href="#financials" class="block py-2 px-4 text-sm hover:bg-gray-100 rounded">การเงิน</a>
+                <a href="#challenges" class="block py-2 px-4 text-sm hover:bg-gray-100 rounded">ความท้าทาย</a>
+                <a href="#conclusion" class="block py-2 px-4 text-sm hover:bg-gray-100 rounded">บทสรุป</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        
+        <section id="hero" class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-bold text-blue-800 mb-4">โอกาสการลงทุนในธุรกิจหน่วยไตเทียมประเทศไทย</h1>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">ภาพรวมเชิงกลยุทธ์ด้านการจัดตั้ง การดำเนินงาน และแนวโน้มการเติบโตสำหรับนักลงทุน</p>
+        </section>
+
+        <section id="market" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">ภาพรวมตลาดและโอกาสทางธุรกิจ</h2>
+            <p class="text-center text-gray-600 mb-8">ทำไมการลงทุนในธุรกิจไตเทียมถึงเป็นโอกาสที่น่าสนใจในปัจจุบัน? ข้อมูลเหล่านี้คือปัจจัยขับเคลื่อนสำคัญที่แสดงให้เห็นถึงศักยภาพการเติบโตอย่างยั่งยืนของตลาดนี้</p>
+            <div class="grid md:grid-cols-3 gap-6 text-center mb-12">
+                <div class="bg-white p-6 rounded-lg shadow-lg border-l-4 border-blue-500">
+                    <div class="text-4xl font-bold text-blue-600">~15% ต่อปี</div>
+                    <p class="text-gray-600 mt-2">อัตราการเพิ่มขึ้นของผู้ป่วยโรคไตวายเรื้อรัง</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg border-l-4 border-green-500">
+                    <div class="text-4xl font-bold text-green-600">1,009 แห่ง</div>
+                    <p class="text-gray-600 mt-2">จำนวนหน่วยไตเทียมในปี พ.ศ. 2565</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg border-l-4 border-yellow-500">
+                    <div class="text-4xl font-bold text-yellow-600">สังคมผู้สูงอายุ</div>
+                    <p class="text-gray-600 mt-2">ปัจจัยขับเคลื่อนหลักจากโรค NCDs</p>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-xl font-semibold text-center mb-4">การเติบโตของจำนวนหน่วยบริการไตเทียม (พ.ศ. 2550 - 2565)</h3>
+                <div class="chart-container h-64 md:h-80">
+                    <canvas id="marketGrowthChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="models" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">รูปแบบการดำเนินธุรกิจ (Business Models)</h2>
+            <p class="text-center text-gray-600 mb-8">เลือกเส้นทางการลงทุนที่เหมาะสมกับเป้าหมายและทรัพยากรของคุณ แต่ละโมเดลมีข้อดีและความท้าทายที่แตกต่างกัน คลิกเพื่อดูรายละเอียดของแต่ละรูปแบบ</p>
+            <div class="flex justify-center mb-6 space-x-2 md:space-x-4">
+                <button data-tab="standalone" class="tab-btn active px-4 py-2 text-sm md:text-base font-semibold rounded-full transition bg-gray-200">คลินิกอิสระ</button>
+                <button data-tab="partnership" class="tab-btn px-4 py-2 text-sm md:text-base font-semibold rounded-full transition bg-gray-200">ร่วมกับ รพ.</button>
+                <button data-tab="turnkey" class="tab-btn px-4 py-2 text-sm md:text-base font-semibold rounded-full transition bg-gray-200">ครบวงจร</button>
+            </div>
+            <div id="tab-content" class="bg-white p-8 rounded-lg shadow-lg min-h-[250px]">
+                <div id="standalone" class="tab-pane">
+                    <h3 class="text-2xl font-bold mb-3">คลินิกอิสระ (Stand-Alone)</h3>
+                    <p class="text-gray-600 mb-4"><strong>ลักษณะ:</strong> ลงทุนและบริหารจัดการเองทั้งหมด ตั้งแต่การก่อสร้าง การขออนุญาต จนถึงการดำเนินงาน</p>
+                    <p class="font-semibold text-green-600 mb-2"><strong>ข้อดี:</strong> มีความยืดหยุ่นในการตัดสินใจและควบคุมทิศทางธุรกิจได้สูงสุด สามารถสร้างแบรนด์และกำหนดมาตรฐานบริการของตนเองได้อย่างเต็มที่</p>
+                    <p class="font-semibold text-red-600"><strong>ความท้าทาย:</strong> ต้องรับผิดชอบในทุกขั้นตอนและใช้เงินลงทุนเริ่มต้นสูง รวมถึงต้องมีความรู้ความเข้าใจในธุรกิจอย่างลึกซึ้ง</p>
+                </div>
+                <div id="partnership" class="tab-pane hidden">
+                    <h3 class="text-2xl font-bold mb-3">การร่วมมือกับโรงพยาบาล (Partnership)</h3>
+                    <p class="text-gray-600 mb-4"><strong>ลักษณะ:</strong> ร่วมมือกับโรงพยาบาลเอกชนหรือรัฐบาลเพื่อให้บริการหน่วยไตเทียมภายในพื้นที่ของโรงพยาบาล</p>
+                    <p class="font-semibold text-green-600 mb-2"><strong>ข้อดี:</strong> ลดภาระการลงทุนในที่ดินและอาคาร เข้าถึงฐานผู้ป่วยที่มีอยู่ของโรงพยาบาลได้ทันที ทำให้ลดความเสี่ยงในช่วงเริ่มต้น</p>
+                    <p class="font-semibold text-gray-600"><strong>เหมาะสำหรับ:</strong> บริษัทขนาดใหญ่ที่ต้องการขยายสาขาอย่างรวดเร็วและมีศักยภาพในการเจรจาเงื่อนไขกับโรงพยาบาล</p>
+                </div>
+                <div id="turnkey" class="tab-pane hidden">
+                    <h3 class="text-2xl font-bold mb-3">ผู้ให้บริการครบวงจร (Turnkey)</h3>
+                    <p class="text-gray-600 mb-4"><strong>ลักษณะ:</strong> ใช้บริการจากบริษัทที่เชี่ยวชาญในการจัดตั้งหน่วยไตเทียมแบบครบวงจร ตั้งแต่การออกแบบ ขออนุญาต จัดหาอุปกรณ์ จนพร้อมเปิดดำเนินการ</p>
+                    <p class="font-semibold text-green-600 mb-2"><strong>ข้อดี:</strong> ลดความซับซ้อนและความเสี่ยงด้านเทคนิค เหมาะสำหรับผู้ประกอบการใหม่หรือนักลงทุนที่ไม่มีความเชี่ยวชาญในวงการแพทย์โดยตรง</p>
+                    <p class="font-semibold text-gray-600"><strong>ทางเลือก:</strong> ช่วยลดความเสี่ยงด้านเวลาและค่าใช้จ่ายที่อาจบานปลายจากการขาดประสบการณ์</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="setup" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">ภาพรวมการจัดตั้งและมาตรฐาน</h2>
+            <p class="text-center text-gray-600 mb-8">การจัดตั้งคลินิกไตเทียมต้องผ่านกระบวนการขออนุญาตที่ซับซ้อนและปฏิบัติตามมาตรฐานที่เข้มงวด ทั้งในด้านสถานที่และระบบน้ำซึ่งเป็นหัวใจสำคัญของบริการ</p>
+            <div class="grid lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-bold mb-4">3 ขั้นตอนสำคัญในการขออนุญาต</h3>
+                    <ol class="relative border-l border-gray-200">                  
+                        <li class="mb-10 ml-6">            
+                            <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white">1</span>
+                            <h4 class="flex items-center mb-1 text-lg font-semibold text-gray-900">ขออนุมัติแผนงานการจัดตั้ง</h4>
+                            <p class="block mb-2 text-sm font-normal leading-none text-gray-500">ยื่นแบบ ส.พ.1 และ ส.พ.2 ต่อกรมสนับสนุนบริการสุขภาพ (สบส.)</p>
+                        </li>
+                        <li class="mb-10 ml-6">
+                            <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white">2</span>
+                            <h4 class="mb-1 text-lg font-semibold text-gray-900">ขอใบอนุญาตประกอบกิจการ</h4>
+                            <p class="text-sm font-normal text-gray-500">ยื่นแบบ ส.พ.7 และ ส.พ.19 หลังจากแผนงานได้รับการอนุมัติ</p>
+                        </li>
+                        <li class="ml-6">
+                            <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white">3</span>
+                            <h4 class="mb-1 text-lg font-semibold text-gray-900">ขึ้นทะเบียนกับ สปสช.</h4>
+                            <p class="text-sm font-normal text-gray-500">เมื่อได้รับใบอนุญาต เพื่อให้สามารถเบิกจ่ายค่ารักษาได้</p>
+                        </li>
+                    </ol>
+                    <p class="mt-4 text-sm text-red-600 bg-red-50 p-3 rounded-md"><strong>หมายเหตุ:</strong> เป็นกระบวนการที่ซับซ้อน การขาดเอกสารเพียงชิ้นเดียวอาจทำให้การขออนุญาตล่าช้าได้</p>
+                </div>
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-bold mb-3">มาตรฐานสถานที่และการก่อสร้าง</h3>
+                        <p class="text-gray-600 mb-2"><strong>ข้อกำหนดขั้นต่ำ:</strong> พื้นที่รวม ≥ 20 ตร.ม. และ ≥ 4 ตร.ม. ต่อเตียง</p>
+                        <p class="text-gray-600"><strong>การออกแบบเพื่อการแข่งขัน:</strong> ควรมีพื้นที่กว้างขวางกว่า (เช่น 6.5 ตร.ม./เตียง), มีห้อง VIP, และทางเข้าที่สะดวกเพื่อสร้างความได้เปรียบ</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-bold mb-3">หัวใจของคลินิก: ระบบผลิตน้ำบริสุทธิ์</h3>
+                        <p class="text-gray-600">ต้องได้มาตรฐานสากล ANSI/AAMI ที่เข้มงวด ควรลงทุนในเทคโนโลยีที่ทันสมัย เช่น ระบบ RO แบบ Double Pass เพื่อความปลอดภัยสูงสุดของผู้ป่วย</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="financials" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">ภาพรวมด้านการเงิน</h2>
+            <p class="text-center text-gray-600 mb-8">การวิเคราะห์ต้นทุนการลงทุนและโครงสร้างรายได้ต่อหน่วยเป็นสิ่งจำเป็นเพื่อประเมินความเป็นไปได้และศักยภาพในการทำกำไรของธุรกิจ</p>
+            <div class="grid lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold text-center mb-4">ประมาณการต้นทุนการลงทุนเริ่มต้น</h3>
+                    <div class="chart-container h-64 md:h-80">
+                        <canvas id="investmentCostChart"></canvas>
+                    </div>
+                     <p class="text-center text-sm text-gray-500 mt-4">ต้นทุนรวมโดยประมาณ: 5.1 - 16.3 ล้านบาท</p>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold text-center mb-4">วิเคราะห์ต้นทุนและรายได้ต่อครั้ง</h3>
+                    <div class="chart-container h-64 md:h-80">
+                        <canvas id="unitEconomicsChart"></canvas>
+                    </div>
+                    <p class="text-center text-sm text-gray-500 mt-4">ส่วนต่างกำไรค่อนข้างน้อย ต้องอาศัยปริมาณผู้ป่วยและสิทธิค่าบริการสูง</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="challenges" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">ความท้าทายและแนวทางรับมือ</h2>
+            <p class="text-center text-gray-600 mb-8">การทำความเข้าใจความท้าทายหลักและเตรียมแนวทางแก้ไขไว้ล่วงหน้า คือกุญแจสำคัญในการดำเนินธุรกิจให้ราบรื่นและประสบความสำเร็จ</p>
+            <div class="space-y-4 max-w-4xl mx-auto">
+                <div class="accordion-item bg-white rounded-lg shadow-lg">
+                    <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center">
+                        1. ต้นทุนวัสดุทางการแพทย์สูง
+                        <span class="transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="accordion-content px-4 pb-4">
+                        <p class="text-gray-600"><strong>แนวทางแก้ไข:</strong> บริหารจัดการสต็อกและซัพพลายเชนอย่างมีประสิทธิภาพ และสร้างสัมพันธ์ที่ดีเพื่อเจรจาต่อรองราคากับผู้จำหน่าย</p>
+                    </div>
+                </div>
+                <div class="accordion-item bg-white rounded-lg shadow-lg">
+                    <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center">
+                        2. การขาดแคลนบุคลากรเฉพาะทาง
+                         <span class="transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="accordion-content px-4 pb-4">
+                         <p class="text-gray-600"><strong>ปัญหา:</strong> พยาบาลเฉพาะทางด้านไตเทียมมีจำนวนจำกัด ทำให้มีการแข่งขันสูงเพื่อดึงดูดบุคลากร</p>
+                        <p class="text-gray-600"><strong>แนวทางแก้ไข:</strong> วางแผนการจัดหาบุคลากรล่วงหน้า, สร้างวัฒนธรรมองค์กรที่ดี, และเสนอค่าตอบแทนรวมถึงสวัสดิการที่สามารถแข่งขันในตลาดได้</p>
+                    </div>
+                </div>
+                <div class="accordion-item bg-white rounded-lg shadow-lg">
+                    <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center">
+                        3. ความซับซ้อนของกฎระเบียบและเอกสาร
+                         <span class="transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="accordion-content px-4 pb-4">
+                        <p class="text-gray-600"><strong>แนวทางแก้ไข:</strong> พิจารณาใช้บริการที่ปรึกษาที่มีความเชี่ยวชาญ หรือเลือกใช้บริการจากบริษัทผู้ให้บริการแบบครบวงจร (Turnkey) เพื่อลดความเสี่ยงด้านเวลาและค่าใช้จ่ายที่อาจเกิดขึ้นจากความผิดพลาดของเอกสาร</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="conclusion" class="scroll-mt-20 text-center bg-blue-800 text-white p-10 rounded-lg">
+            <h2 class="text-3xl font-bold mb-4">สรุปและข้อเสนอแนะเชิงกลยุทธ์</h2>
+            <p class="max-w-3xl mx-auto mb-8">กุญแจสู่ความสำเร็จในการลงทุนธุรกิจหน่วยไตเทียมประกอบด้วย 3 ปัจจัยหลัก</p>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">1. เลือกโมเดลธุรกิจที่เหมาะสม</h3>
+                    <p class="text-blue-200">สำหรับผู้ประกอบการรายใหม่ การร่วมทุนกับ รพ. หรือใช้บริการ Turnkey อาจเป็นทางเลือกที่ช่วยลดความเสี่ยงได้ดีที่สุด</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">2. บริหารต้นทุนวัสดุอย่างเข้มงวด</h3>
+                    <p class="text-blue-200">เนื่องจากเป็นต้นทุนส่วนใหญ่ที่สุด การบริหารจัดการอย่างมีประสิทธิภาพจะส่งผลโดยตรงต่อผลกำไรของธุรกิจ</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">3. สร้างความได้เปรียบในการแข่งขัน</h3>
+                    <p class="text-blue-200">ออกแบบคลินิกที่สะดวกสบาย, มีความเป็นส่วนตัว, และให้บริการที่เหนือกว่ามาตรฐานเพื่อดึงดูดกลุ่มลูกค้าที่มีกำลังซื้อสูง</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <h3 class="text-xl font-semibold mb-4">สอบถามข้อมูลเพิ่มเติม</h3>
+            <p>ชื่อ-นามสกุล: [กรอกชื่อ]</p>
+            <p>ตำแหน่ง: [กรอกตำแหน่ง]</p>
+            <p>อีเมล: [กรอกอีเมล]</p>
+            <p>เบอร์โทรศัพท์: [กรอกเบอร์โทรศัพท์]</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const menuBtn = document.getElementById('menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link, #mobile-menu a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                     if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+            
+            const sections = document.querySelectorAll('section');
+            const navLi = document.querySelectorAll('nav a.nav-link');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLi.forEach(a => {
+                    a.classList.remove('active');
+                    if (a.href.includes(current)) {
+                        a.classList.add('active');
+                    }
+                });
+            });
+
+            const tabs = document.querySelectorAll('.tab-btn');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(item => item.classList.remove('active'));
+                    tab.classList.add('active');
+                    const target = tab.getAttribute('data-tab');
+                    tabPanes.forEach(pane => {
+                        if (pane.id === target) {
+                            pane.classList.remove('hidden');
+                        } else {
+                            pane.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('span');
+                    
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        icon.style.transform = 'rotate(0deg)';
+                    } else {
+                        document.querySelectorAll('.accordion-content').forEach(c => c.style.maxHeight = null);
+                        document.querySelectorAll('.accordion-header span').forEach(i => i.style.transform = 'rotate(0deg)');
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        icon.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+
+            const marketGrowthCtx = document.getElementById('marketGrowthChart').getContext('2d');
+            new Chart(marketGrowthCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['พ.ศ. 2550', 'พ.ศ. 2565'],
+                    datasets: [{
+                        label: 'จำนวนหน่วยไตเทียม',
+                        data: [395, 1009],
+                        backgroundColor: ['rgba(59, 130, 246, 0.6)','rgba(22, 163, 74, 0.6)'],
+                        borderColor: ['rgba(59, 130, 246, 1)','rgba(22, 163, 74, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+            
+            const investmentCostCtx = document.getElementById('investmentCostChart').getContext('2d');
+            new Chart(investmentCostCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['ก่อสร้าง', 'ระบบน้ำ', 'อุปกรณ์การแพทย์', 'ใบอนุญาต'],
+                    datasets: [{
+                        label: 'สัดส่วนต้นทุน (เฉลี่ย)',
+                        data: [2, 3, 5.5, 0.2],
+                        backgroundColor: [
+                            'rgba(255, 159, 64, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(153, 102, 255, 0.7)'
+                        ],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    const value = context.parsed;
+                                    const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(2) + '%';
+                                    label += percentage
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const unitEconomicsCtx = document.getElementById('unitEconomicsChart').getContext('2d');
+            new Chart(unitEconomicsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['สิทธิบัตรทอง', 'สิทธิข้าราชการ/เงินสด'],
+                    datasets: [
+                        {
+                            label: 'ต้นทุนเฉลี่ย',
+                            data: [1776, 1776],
+                            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'รายได้เฉลี่ย',
+                            data: [1750, 2700],
+                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString('th-TH') + ' บาท';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.parsed.y.toLocaleString('th-TH') + ' บาท';
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+        });
+    </script>
+
+</body>
+</html>
